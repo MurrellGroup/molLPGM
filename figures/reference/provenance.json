@@ -1,0 +1,85 @@
+{
+  "dataset": "GEOM-Drugs",
+  "samples_per_method": 100,
+  "selection": "First 100 paired cases with at least two fragments from the fixed 10K test selection; without quality filtering.",
+  "models": {
+    "fragment": {
+      "checkpoint_sha256": "de537eaba256c5c3d8cb14a879546666d614af405aaf73ccafec2a4f579e5859",
+      "source_checkpoint_sha256": "b97c70570bee59e72a7cba5ff9710695f3c77a19cbaf7c975e364a13e9f07e92",
+      "checkpoint_step": 800000,
+      "weights": "ema",
+      "ema_decay": 0.9999,
+      "ema_num_updates": 800000,
+      "steps": 2000,
+      "time_schedule": "sqrt",
+      "initial_seed": 20112026,
+      "sampling_seed": 30112026,
+      "process": {
+        "source_sigma": 3.0,
+        "internal_clock_power": 16.0,
+        "internal_mobility_sigma": 0.15,
+        "internal_mobility_fade_start": 0.8,
+        "manifold_substep": 0.005,
+        "rotation_variance": 6.0,
+        "center_spread_sigma": 3.0,
+        "center_spread_timescale": 0.1,
+        "center_noise_profile": "early-diffusion-v1",
+        "rotation_noise_profile": "constant-v1"
+      }
+    },
+    "bm": {
+      "checkpoint_sha256": "b4a381cb7ecb311f4c351f3c62c7a54aa12b08a6e8849da6b200b560215c9b21",
+      "source_checkpoint_sha256": "b4a381cb7ecb311f4c351f3c62c7a54aa12b08a6e8849da6b200b560215c9b21",
+      "checkpoint_step": 800000,
+      "weights": "ema",
+      "ema_decay": 0.9999,
+      "ema_num_updates": 800000,
+      "steps": 2000,
+      "time_schedule": "sqrt",
+      "initial_seed": 20112026,
+      "sampling_seed": 30112026,
+      "process": {
+        "coordinate_process": "atom-brownian-kumaraswamy-v1",
+        "atom_bm_variance": 14.8,
+        "atom_bm_clock_a": 2.3,
+        "atom_bm_clock_b": 3.1,
+        "source_sigma": 3.0
+      }
+    }
+  },
+  "conditional_selection": "conditional-selection.toml",
+  "conditional_process": {
+    "fragment": {
+      "coordinate_process": "fragment-se3-plus-internal",
+      "source_sigma": 3.0,
+      "time_epsilon": 0.0010000000474974513,
+      "atom_class_count": 14,
+      "mask_class": 13,
+      "random_global_rotation": true,
+      "center_variance": 11.11111068725586,
+      "center_spread_sigma": 3.0,
+      "center_spread_timescale": 0.10000000149011612,
+      "internal_variance": 0.4000000059604645,
+      "internal_clock_power": 16.0,
+      "internal_mobility_sigma": 0.15000000596046448,
+      "internal_mobility_fade_start": 0.800000011920929,
+      "rotation_variance": 6.0,
+      "rotation_angle_cap": 2.9845130443573,
+      "manifold_substep": 0.004999999888241291,
+      "inertia_regularisation": 9.999999747378752e-06
+    },
+    "bm": {
+      "coordinate_process": "atom-brownian-kumaraswamy-v1",
+      "source_sigma": 3.0,
+      "time_epsilon": 0.0010000000474974513,
+      "atom_class_count": 14,
+      "mask_class": 13,
+      "random_global_rotation": true,
+      "atom_bm_clock_a": 2.3,
+      "atom_bm_clock_b": 3.1,
+      "atom_bm_variance": 14.8
+    }
+  },
+  "coordinate_units": "angstrom",
+  "mse_units": "squared Euclidean displacement per atom in angstrom squared"
+}

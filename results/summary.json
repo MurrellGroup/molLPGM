@@ -1,0 +1,114 @@
+{
+  "geom-fragment": {
+    "checkpoint": {
+      "file": "geom/fragment.pt",
+      "sha256": "de537eaba256c5c3d8cb14a879546666d614af405aaf73ccafec2a4f579e5859",
+      "bytes": 1731183363,
+      "parameters": 216378263,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/geom/fragment.pt"
+    },
+    "metrics": {
+      "valid": {
+        "count": 9842,
+        "total": 10000,
+        "fraction": 0.9842
+      },
+      "valid_connected": {
+        "count": 9343,
+        "total": 10000,
+        "fraction": 0.9343
+      },
+      "uniqueness": {
+        "count": 9842,
+        "total": 9842,
+        "fraction": 1.0
+      }
+    }
+  },
+  "geom-bm": {
+    "checkpoint": {
+      "file": "geom/bm.pt",
+      "sha256": "b4a381cb7ecb311f4c351f3c62c7a54aa12b08a6e8849da6b200b560215c9b21",
+      "bytes": 1731132939,
+      "parameters": 216375953,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/geom/bm.pt"
+    },
+    "metrics": {
+      "valid": {
+        "count": 8998,
+        "total": 10000,
+        "fraction": 0.8998
+      },
+      "valid_connected": {
+        "count": 8636,
+        "total": 10000,
+        "fraction": 0.8636
+      },
+      "uniqueness": {
+        "count": 8992,
+        "total": 8998,
+        "fraction": 0.9993331851522561
+      }
+    }
+  },
+  "qm9-fragment": {
+    "checkpoint": {
+      "file": "qm9/fragment.pt",
+      "sha256": "87c22cc549ae3a5a7f1dedddcabae1ddd69c12c126e7fc6fc82f504fd9a747e2",
+      "bytes": 588854123,
+      "parameters": 73591607,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/qm9/fragment.pt"
+    },
+    "metrics": {
+      "valid": {
+        "count": 9863,
+        "total": 10000,
+        "fraction": 0.9863
+      },
+      "valid_connected": {
+        "count": 9831,
+        "total": 10000,
+        "fraction": 0.9831
+      },
+      "uniqueness": {
+        "count": 9679,
+        "total": 9863,
+        "fraction": 0.9813444185339146
+      }
+    }
+  },
+  "qm9-bm": {
+    "checkpoint": {
+      "file": "qm9/bm.pt",
+      "sha256": "fb431bca7398c6c0dd6fa27ffa8e03797533c3feff696743416b15fc7f9e2582",
+      "bytes": 588816611,
+      "parameters": 73590065,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/qm9/bm.pt"
+    },
+    "metrics": {
+      "valid": {
+        "count": 9865,
+        "total": 10000,
+        "fraction": 0.9865
+      },
+      "valid_connected": {
+        "count": 9857,
+        "total": 10000,
+        "fraction": 0.9857
+      },
+      "uniqueness": {
+        "count": 9664,
+        "total": 9865,
+        "fraction": 0.9796249366447035
+      }
+    }
+  }
+}

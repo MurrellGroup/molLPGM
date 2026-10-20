@@ -1,0 +1,5 @@
+# Approximately fit to match the conditional fragment bridge's spread around its t=1 endpoint.
+coordinate_process = "atom-brownian-kumaraswamy-v1"
+atom_bm_clock_a = 2.3
+atom_bm_clock_b = 3.1
+atom_bm_variance = 14.8

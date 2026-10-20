@@ -1,0 +1,13 @@
+dataset,model,metric,count,denominator,percent
+geom,fragment,valid,9842,10000,98.42
+geom,fragment,valid_connected,9343,10000,93.43
+geom,fragment,uniqueness,9842,9842,100.0
+geom,bm,valid,8998,10000,89.98
+geom,bm,valid_connected,8636,10000,86.36
+geom,bm,uniqueness,8992,8998,99.93331851522561
+qm9,fragment,valid,9863,10000,98.63
+qm9,fragment,valid_connected,9831,10000,98.31
+qm9,fragment,uniqueness,9679,9863,98.13444185339146
+qm9,bm,valid,9865,10000,98.65
+qm9,bm,valid_connected,9857,10000,98.57000000000001
+qm9,bm,uniqueness,9664,9865,97.96249366447036

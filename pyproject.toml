@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mol-lpgm"
+version = "0.1.0"
+description = "Fragment LPGM and atom-wise Brownian flow matching for molecular generation"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "torch>=2.11", "rdkit>=2025.3", "matplotlib>=3.8"]
+
+[project.optional-dependencies]
+evaluation = ["openbabel-wheel==3.1.1.23", "rdkit==2026.3.6", "numpy==2.5.3"]
+geom = ["torch-geometric>=2.6"]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,32 @@
+{
+  "format_version": 1,
+  "kind": "cartesian_brownian_endpoint",
+  "coordinate_epsilon": 0.05,
+  "bins": 10,
+  "components": {
+    "coordinate": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "atom_label": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  }
+}

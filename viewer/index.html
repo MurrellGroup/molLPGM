@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07100f">
+  <link rel="icon" href="data:,">
+  <title>LPGM Sampling Trajectory</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <span>LPGM</span>
+      <span class="brand-divider"></span>
+      <span class="brand-subtitle">sampling trajectory</span>
+    </div>
+    <div id="loadStatus" class="status"><span></span> loading trajectory</div>
+  </header>
+
+  <main>
+    <section class="stage" aria-label="Interactive three-dimensional trajectory">
+      <canvas id="viewport"></canvas>
+      <canvas id="figureLabelCanvas" hidden aria-hidden="true"></canvas>
+      <div class="stage-title">
+        <div id="modeLabel" class="eyebrow">Latent process generator matching</div>
+        <h1 id="trajectoryTitle"><i>x</i><sub>t</sub> from source noise to molecule</h1>
+      </div>
+      <div class="time-readout">
+        <span>physical time</span>
+        <strong id="timeValue">0.000</strong>
+      </div>
+      <div id="hoverCard" class="hover-card" hidden></div>
+      <div class="gesture-hint">drag to rotate · wheel to zoom</div>
+    </section>
+
+    <aside class="panel">
+      <section class="controls figure-toggle">
+        <label class="switch-row"><span>Static figure</span><input id="figureMode" type="checkbox"><i></i></label>
+      </section>
+      <section id="figureControls" class="figure-controls" hidden>
+        <div class="section-label">Frame sequence</div>
+        <label for="figureTimes">Physical times, separated by commas</label>
+        <input id="figureTimes" type="text" value="0, 0.2, 0.4, 0.6, 0.8, 1" spellcheck="false">
+        <p class="note">Same orientation and scale at every time. Drag to rotate all frames; wheel to zoom.</p>
+        <label for="figureSpacing">Frame spacing <output id="figureSpacingOutput">1.10×</output></label>
+        <input id="figureSpacing" type="range" min="0.4" max="3" step="0.05" value="1.1">
+        <label class="plain-check"><input id="figureLabels" type="checkbox"> Show time labels</label>
+        <div class="figure-dimensions">
+          <label>Width (px)<input id="figureWidth" type="number" min="256" max="12000" step="100" value="6000"></label>
+          <label>Height (px)<input id="figureHeight" type="number" min="128" max="8000" step="100" value="1400"></label>
+        </div>
+        <div class="figure-buttons"><button id="figureFit" type="button">Fit figure</button><button id="figureReset" type="button">Reset orientation</button></div>
+        <button id="saveFigure" class="save-video" type="button" disabled>Save PNG</button>
+        <button id="figureSettings" class="save-video" type="button">Save figure settings</button>
+        <p id="figureStatus" class="note" role="status"></p>
+      </section>
+      <section id="trajectoryPicker" class="trajectory-picker" hidden>
+        <label for="trajectorySelect" class="section-label">Trajectory</label>
+        <select id="trajectorySelect" aria-label="Select a sampling trajectory"></select>
+        <button id="pairedSample" class="save-video" type="button" hidden>Show other model · same sample</button>
+        <p id="pairedSampleNote" class="note" hidden></p>
+        <div class="quality-controls">
+          <label class="plain-check"><input id="qualityFilter" type="checkbox" disabled> <span id="qualityFilterLabel">Only retain passing samples</span></label>
+          <select id="qualityCriterion" aria-label="Sample quality criterion" disabled>
+            <option value="valid_connected" selected>Valid + connected</option>
+            <option value="valid">Valid</option>
+            <option value="connected">Connected</option>
+          </select>
+          <p id="qualityStatus" class="note" role="status">Quality evaluation unavailable for this panel.</p>
+        </div>
+      </section>
+
+      <section>
+        <div id="sampleLabel" class="section-label">Sample</div>
+        <h2 id="sourceName">—</h2>
+        <dl class="facts">
+          <div><dt>Atoms</dt><dd id="atomCount">—</dd></div>
+          <div><dt id="entityCountLabel">Fragments</dt><dd id="segmentCount">—</dd></div>
+          <div><dt>Frame</dt><dd id="frameValue">—</dd></div>
+          <div><dt>Links shown</dt><dd id="bondCount">—</dd></div>
+        </dl>
+      </section>
+
+      <section class="transport">
+        <div class="transport-row">
+          <button id="playButton" class="play" type="button" aria-label="Play or pause">
+            <span id="playIcon">▶</span>
+          </button>
+          <input id="timeline" type="range" min="0" max="100" value="0" step="1"
+                 aria-label="Trajectory frame">
+        </div>
+        <div class="endpoints"><span>t = 0 · source</span><span>t = 1 · sample</span></div>
+      </section>
+
+      <section class="controls">
+        <label>
+          <span>Playback</span>
+          <output id="speedOutput">18 fps</output>
+          <input id="speed" type="range" min="2" max="40" value="18" step="1">
+        </label>
+        <label>
+          <span>Atom size</span>
+          <output id="sizeOutput">1.00×</output>
+          <input id="pointSize" type="range" min="1.2" max="6" value="2.8" step="0.1">
+        </label>
+        <label>
+          <span>Bond width</span><output id="bondSizeOutput">1.00×</output>
+          <input id="bondSize" type="range" min="0.2" max="3" value="1" step="0.05">
+        </label>
+        <label class="switch-row"><span>Show bonds</span><input id="showBonds" type="checkbox" checked><i></i></label>
+        <label class="switch-row">
+          <span>Auto rotate</span>
+          <input id="autoRotate" type="checkbox" checked>
+          <i></i>
+        </label>
+        <label class="switch-row">
+          <span>Fit each frame</span>
+          <input id="autoFit" type="checkbox" checked>
+          <i></i>
+        </label>
+        <label id="atomColorControl" class="switch-row" hidden>
+          <span>Color atoms by type</span>
+          <input id="atomColorMode" type="checkbox" checked>
+          <i></i>
+        </label>
+        <label class="select-control">
+          <span>Fragment palette</span>
+          <select id="fragmentPalette" aria-label="Fragment color palette">
+            <option value="vivid">Vivid</option>
+            <option value="accessible">Colorblind-friendly</option>
+            <option value="muted">Muted</option>
+            <option value="blue-red">Blue / red</option>
+            <option value="single">Single color</option>
+          </select>
+        </label>
+        <label id="fragmentColorControl" class="color-control" hidden>
+          <span>Molecule color</span>
+          <input id="fragmentColor" type="color" value="#2468b4" aria-label="Single molecule color">
+        </label>
+        <p class="note">The palette colors bonds and fragment centers. Turn off atom-type colors to use it for atoms too.</p>
+        <label id="centerControl" class="switch-row" hidden>
+          <span>Show fragment centers</span>
+          <input id="centerMode" type="checkbox" checked>
+          <i></i>
+        </label>
+        <label class="select-control">
+          <span>Background</span>
+          <select id="backgroundPreset" aria-label="Viewport background">
+            <option value="deep-green">Deep green</option>
+            <option value="graphite">Graphite</option>
+            <option value="black">Black</option>
+            <option value="white" selected>White</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+        <label class="color-control">
+          <span>Custom color</span>
+          <input id="backgroundColor" type="color" value="#172b28"
+                 aria-label="Custom viewport background color">
+        </label>
+      </section>
+
+      <section class="export-controls">
+        <div class="section-label">Export</div>
+        <div class="export-settings">
+          <label>
+            <span>Rest at t = 1</span>
+            <output id="endHoldOutput">2.0 s</output>
+            <input id="endHold" type="range" min="0" max="12" value="2"
+                   step="0.5">
+          </label>
+          <label class="select-control">
+            <span>MP4 bitrate</span>
+            <select id="videoBitrate" aria-label="Export video bitrate">
+              <option value="4">4 Mbps</option>
+              <option value="8">8 Mbps</option>
+              <option value="12" selected>12 Mbps</option>
+              <option value="20">20 Mbps</option>
+              <option value="40">40 Mbps</option>
+            </select>
+          </label>
+        </div>
+        <button id="saveVideoButton" class="save-video" type="button">
+          <span class="record-dot"></span>
+          <span id="saveVideoLabel">Save video</span>
+        </button>
+        <p id="videoStatus" class="note">
+          Records one complete viewport-only MP4.
+        </p>
+      </section>
+
+      <section id="processSection" hidden>
+        <div id="processLabel" class="section-label">Conditional path noise</div>
+        <dl class="noise-facts">
+          <div><dt>Source σ</dt><dd id="sourceSigma">—</dd></div>
+          <div><dt>Center v</dt><dd id="centerVariance">—</dd></div>
+          <div><dt>Clocks · C/R/Q</dt><dd id="clockPowers">—</dd></div>
+          <div><dt id="internalVarianceLabel">Internal variance</dt><dd id="internalVariance">—</dd></div>
+          <div><dt id="rotationSigmaLabel">Rotation atom σ</dt><dd id="rotationSigma">—</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <div id="colorLabel" class="section-label">Fragment color</div>
+        <div id="segmentKey" hidden></div>
+        <div id="fragmentKey" class="color-key" hidden></div>
+        <div id="atomKey" class="color-key" hidden></div>
+        <p id="colorNote" class="note">Colors identify atoms or BRICS fragments.</p>
+        <p id="bondNote" class="note" hidden>Bonds use the final X₁ structure. Within-fragment bonds stay visible throughout; between-fragment bonds appear only at t = 1. Bonds are inferred for display.</p>
+      </section>
+
+      <footer>
+        <span id="checkpointName">—</span>
+        <span id="seedValue">—</span>
+      </footer>
+    </aside>
+  </main>
+
+  <script type="module" src="viewer.js"></script>
+</body>
+</html>

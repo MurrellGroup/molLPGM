@@ -1,0 +1,33 @@
+dataset = "qm9"
+model = "bm"
+loss_weights = "configs/bm-weights.json"
+
+[architecture]
+width = 512
+depth = 12
+heads = 8
+feedforward_width = 2048
+
+[process]
+source_sigma = 3.0
+atom_bm_profile = "configs/processes/bm.toml"
+
+[training]
+steps = 800000
+balance_at = 100000
+warmup_steps = 10000
+warmdown_steps = 100000
+learning_rate = 0.02
+minimum_learning_rate = 1e-9
+exponential_decay_factor = 0.06720097636955107
+adamw_lr_multiplier = 0.1
+ema_decay = 0.9999
+logit_offset_weight = 0.01
+accumulate = 2
+checkpoint_every = 20000
+keep_last_checkpoints = 2
+validate_every = 5000
+validation_batches = 64
+calibration_batches = 64
+holdout_batches = 32
+seed = 50731031

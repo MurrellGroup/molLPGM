@@ -1,0 +1,43 @@
+{
+  "repository": "MurrellLab/LPGM",
+  "geom": {
+    "fragment": {
+      "file": "geom/fragment.pt",
+      "sha256": "de537eaba256c5c3d8cb14a879546666d614af405aaf73ccafec2a4f579e5859",
+      "bytes": 1731183363,
+      "parameters": 216378263,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/geom/fragment.pt"
+    },
+    "bm": {
+      "file": "geom/bm.pt",
+      "sha256": "b4a381cb7ecb311f4c351f3c62c7a54aa12b08a6e8849da6b200b560215c9b21",
+      "bytes": 1731132939,
+      "parameters": 216375953,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/geom/bm.pt"
+    }
+  },
+  "qm9": {
+    "fragment": {
+      "file": "qm9/fragment.pt",
+      "sha256": "87c22cc549ae3a5a7f1dedddcabae1ddd69c12c126e7fc6fc82f504fd9a747e2",
+      "bytes": 588854123,
+      "parameters": 73591607,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/qm9/fragment.pt"
+    },
+    "bm": {
+      "file": "qm9/bm.pt",
+      "sha256": "fb431bca7398c6c0dd6fa27ffa8e03797533c3feff696743416b15fc7f9e2582",
+      "bytes": 588816611,
+      "parameters": 73590065,
+      "step": 800000,
+      "ema_decay": 0.9999,
+      "url": "https://huggingface.co/MurrellLab/LPGM/resolve/main/qm9/bm.pt"
+    }
+  }
+}
