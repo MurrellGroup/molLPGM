@@ -1,0 +1,58 @@
+{
+  "checkpoint": "model.pt",
+  "checkpoint_sha256": "3b2e6717889e2cf5916f58a2f130fdd84bece6c54a3d0d1450a08b7013f46111",
+  "weights": "EMA",
+  "parameters": 50049,
+  "ema_decay": 0.999,
+  "stage_updates": [
+    50000,
+    100000,
+    200000
+  ],
+  "selected_stage_steps": [
+    45000,
+    94000,
+    191000
+  ],
+  "training_seed": 20261016,
+  "validation_seed": 920261016,
+  "conditional_seeds": [
+    831261016,
+    831261017,
+    831261018,
+    831261019,
+    831261020,
+    831261021
+  ],
+  "source_quantiles": {
+    "first": 0.02,
+    "last": 0.98,
+    "interval": 0.02
+  },
+  "display_rk4_steps": 1024,
+  "histogram": {
+    "count": 100000,
+    "max_absolute_regeneration_difference": 0.0,
+    "bitwise": true,
+    "analytic_cdf_max_error": 0.006007128189502775,
+    "finite": true,
+    "steps": 515,
+    "seed": 740261018
+  },
+  "checks": {
+    "all_six_quantile_path_sets_bitwise_reproduced": true,
+    "all_six_conditional_path_sets_bitwise_reproduced": true,
+    "all_histograms_equal_100000_recorded_model_endpoints": true,
+    "zero_velocity_retains_source": true,
+    "inference_inputs": [
+      "current_coordinate",
+      "time"
+    ]
+  },
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.0+cu130",
+    "numpy": "2.5.3",
+    "matplotlib": "3.11.2"
+  }
+}

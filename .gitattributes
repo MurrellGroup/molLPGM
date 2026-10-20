@@ -1,0 +1,4 @@
+# Generated vector paths are reviewed through the figures, not line diffs.
+*.svg -diff -whitespace linguist-generated
+# Python's CSV writer uses standard CRLF records.
+*.csv whitespace=cr-at-eol

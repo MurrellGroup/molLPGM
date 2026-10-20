@@ -10,6 +10,7 @@ The fragment process separates shared fragment translation and rotation from int
 - [Models and training](docs/models-and-training.md): conditioning, architecture, process parameters, datasets, optimization, evaluation, and commands for training and sampling.
 - [Trajectory viewer](viewer/README.md): an independent combined viewer with playback, static frame sequences, and figure export.
 - [Publication figures](figures/README.md): standalone plotting and measurement code, with the paired generated and conditional GEOM path data.
+- [One-dimensional switching example](examples/switching/README.md): a separate LPGM example with training code, trained weights, and reproducible figures.
 - [10K evaluation results](results/README.md): four unfiltered sample archives and ADiT metrics.
 - [Comparison protocol](docs/comparison.md): conditioning, method-specific objectives, and evaluation conventions.
 

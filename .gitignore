@@ -10,5 +10,6 @@ samples/
 artifacts/
 checkpoints/
 *.pt
+!examples/switching/reference/model.pt
 *.safetensors
 lpgm_hf.txt

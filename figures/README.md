@@ -3,6 +3,19 @@
 This directory is independent of the neural network, training scripts, and web
 viewer. Replotting needs only NumPy and Matplotlib; no checkpoint or GPU is needed.
 
+## Figures
+
+| Paths | PDF | SVG | PNG | Mean curves |
+| --- | --- | --- | --- | --- |
+| Generated | [PDF](generated/geom-error-and-radius.pdf) | [SVG](generated/geom-error-and-radius.svg) | [PNG](generated/geom-error-and-radius.png) | [CSV](generated/mean-curves.csv) |
+| Conditional | [PDF](conditional/geom-conditional-error-and-radius.pdf) | [SVG](conditional/geom-conditional-error-and-radius.svg) | [PNG](conditional/geom-conditional-error-and-radius.png) | [CSV](conditional/mean-curves.csv) |
+
+![Generated GEOM paths: Kabsch MSE and radius of gyration](generated/geom-error-and-radius.png)
+
+![Conditional GEOM paths: Kabsch MSE and radius of gyration](conditional/geom-conditional-error-and-radius.png)
+
+## Replot
+
 From the repository root:
 
 ```bash
