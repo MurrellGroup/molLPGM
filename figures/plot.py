@@ -32,11 +32,15 @@ Y_LIMITS = {"mse": (0, 35), "rg": (0, 7)}
 STEM = "geom-error-and-radius"
 
 
-def plot(data_path, output):
+def plot(data_path, output, spread="individual"):
+    if spread not in ("individual", "quantiles"):
+        raise ValueError("spread must be individual or quantiles")
     data = np.load(data_path)
     conditional = "path_kind" in data and str(data["path_kind"]) == "conditional"
     dataset = str(data["dataset"]) if "dataset" in data else "geom"
     stem = f"{dataset}-conditional-error-and-radius" if conditional else f"{dataset}-error-and-radius"
+    if spread == "quantiles":
+        stem += "-quantiles"
     time = data["time"]
     keys = [
         f"{m}_{metric}_{s}" for metric in ("mse", "rg") for m in MODELS for s in SCALES
@@ -69,6 +73,11 @@ def plot(data_path, output):
                 curves[f"fragment_rg_{scale}"][:, -1], curves[f"bm_rg_{scale}"][:, -1]
             )
     means = {key: value.mean(axis=0) for key, value in curves.items()}
+    quantiles = (
+        {key: np.quantile(value, [0.05, 0.95], axis=0, method="linear")
+         for key, value in curves.items()}
+        if spread == "quantiles" else None
+    )
     plt.rcParams.update(
         {
             "font.family": "DejaVu Sans",
@@ -102,21 +111,30 @@ def plot(data_path, output):
     ):
         for model in MODELS:
             for scale in SCALES:
-                values = curves[f"{model}_{metric}_{scale}"]
-                segments = np.stack(
-                    [np.broadcast_to(time, values.shape), values], axis=-1
-                )
-                ax.add_collection(
-                    LineCollection(
-                        segments,
-                        colors=COLORS[model],
-                        linewidths=0.35,
-                        linestyles=STYLES[scale],
-                        alpha=0.045,
-                        zorder=1,
-                        rasterized=False,
+                key = f"{model}_{metric}_{scale}"
+                if quantiles is not None:
+                    for boundary in quantiles[key]:
+                        ax.plot(
+                            time, boundary, color=COLORS[model],
+                            linestyle=STYLES[scale], lw=0.65, alpha=0.4,
+                            solid_capstyle="round", dash_capstyle="butt", zorder=1,
+                        )
+                else:
+                    values = curves[key]
+                    segments = np.stack(
+                        [np.broadcast_to(time, values.shape), values], axis=-1
                     )
-                )
+                    ax.add_collection(
+                        LineCollection(
+                            segments,
+                            colors=COLORS[model],
+                            linewidths=0.35,
+                            linestyles=STYLES[scale],
+                            alpha=0.045,
+                            zorder=1,
+                            rasterized=False,
+                        )
+                    )
         for model in MODELS:
             for scale in SCALES:
                 ax.plot(
@@ -143,7 +161,10 @@ def plot(data_path, output):
         )
         ax.set_yticks(np.arange(0, Y_LIMITS[metric][1] + 0.01, 5 if metric == "mse" else 1))
         ax.tick_params(direction="out", length=3.5, width=0.65, pad=3.5)
-        assert len(ax.lines) == 4 and len(ax.collections) == 4
+        if quantiles is not None:
+            assert len(ax.lines) == 12 and len(ax.collections) == 0
+        else:
+            assert len(ax.lines) == 4 and len(ax.collections) == 4
     handles = [
         Line2D(
             [],
@@ -190,12 +211,27 @@ def plot(data_path, output):
             [float(t), *[float(means[key][i]) for key in keys]]
             for i, t in enumerate(time)
         )
+    if quantiles is not None:
+        with (output / "quantile-curves.csv").open("w") as stream:
+            writer = csv.writer(stream)
+            writer.writerow(["time", *[f"{key}_q{q:02d}" for key in keys for q in (5, 95)]])
+            writer.writerows(
+                [float(t), *[float(quantiles[key][q, i]) for key in keys for q in (0, 1)]]
+                for i, t in enumerate(time)
+            )
     details = dict(
         samples_per_model=samples,
         frames_per_path=len(time),
         path_kind="conditional" if conditional else "generated",
         mean_curves_per_panel=4,
-        individual_curves_per_panel=4 * samples,
+        spread=spread,
+        individual_curves_per_panel=4 * samples if quantiles is None else 0,
+        quantile_curves_per_panel=0 if quantiles is None else 8,
+        quantile_probabilities=None if quantiles is None else [0.05, 0.95],
+        quantile_definition=(
+            "Pointwise empirical quantiles across molecules, with linear interpolation; not confidence intervals for the mean."
+            if quantiles is not None else None
+        ),
         selection="Paired molecules with at least two fragments; no quality filtering by this script.",
         endpoint=(
             "Both conditional paths share the same Gaussian source and dataset endpoint; errors are to that shared endpoint."
@@ -225,8 +261,10 @@ def plot(data_path, output):
             "dashed": "whole molecule",
             "solid": "within fragment",
         },
-        individual_alpha=0.045,
-        individual_width_pt=0.35,
+        individual_alpha=0.045 if quantiles is None else None,
+        individual_width_pt=0.35 if quantiles is None else None,
+        quantile_alpha=0.4 if quantiles is not None else None,
+        quantile_width_pt=0.65 if quantiles is not None else None,
         mean_width_pt=1.5,
         mean_alpha=0.7,
         mean_outline=False,
@@ -247,8 +285,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument(
+        "--spread", choices=("individual", "quantiles"), default="individual",
+        help="Show individual paths or pointwise 5th/95th percentile lines around the means",
+    )
     args = parser.parse_args()
-    plot(args.data, args.output_dir)
+    plot(args.data, args.output_dir, args.spread)
 
 
 if __name__ == "__main__":

@@ -5,28 +5,38 @@ viewer. Replotting needs only NumPy and Matplotlib; no checkpoint or GPU is need
 
 ## Figures
 
-| Paths | PDF | SVG | PNG | Mean curves |
-| --- | --- | --- | --- | --- |
-| Generated | [PDF](generated/geom-error-and-radius.pdf) | [SVG](generated/geom-error-and-radius.svg) | [PNG](generated/geom-error-and-radius.png) | [CSV](generated/mean-curves.csv) |
-| Conditional | [PDF](conditional/geom-conditional-error-and-radius.pdf) | [SVG](conditional/geom-conditional-error-and-radius.svg) | [PNG](conditional/geom-conditional-error-and-radius.png) | [CSV](conditional/mean-curves.csv) |
+| Paths | Display | PDF | SVG | PNG | Curve data |
+| --- | --- | --- | --- | --- | --- |
+| Generated | Mean + central 90% | [PDF](generated/geom-error-and-radius-quantiles.pdf) | [SVG](generated/geom-error-and-radius-quantiles.svg) | [PNG](generated/geom-error-and-radius-quantiles.png) | [Quantiles CSV](generated/quantile-curves.csv) |
+| Conditional | Mean + central 90% | [PDF](conditional/geom-conditional-error-and-radius-quantiles.pdf) | [SVG](conditional/geom-conditional-error-and-radius-quantiles.svg) | [PNG](conditional/geom-conditional-error-and-radius-quantiles.png) | [Quantiles CSV](conditional/quantile-curves.csv) |
+| Generated | Mean + individual paths | [PDF](generated/geom-error-and-radius.pdf) | [SVG](generated/geom-error-and-radius.svg) | [PNG](generated/geom-error-and-radius.png) | [Means CSV](generated/mean-curves.csv) |
+| Conditional | Mean + individual paths | [PDF](conditional/geom-conditional-error-and-radius.pdf) | [SVG](conditional/geom-conditional-error-and-radius.svg) | [PNG](conditional/geom-conditional-error-and-radius.png) | [Means CSV](conditional/mean-curves.csv) |
 
-![Generated GEOM paths: Kabsch MSE and radius of gyration](generated/geom-error-and-radius.png)
+The compact versions show thick mean curves and thin **5th and 95th percentile**
+curves, calculated across the 100 molecules separately at each time. These are
+pointwise central 90% ranges, not confidence intervals for the means. Quantiles
+use linear interpolation between ranked values. No individual trajectories are
+drawn, and the means are identical in both versions.
 
-![Conditional GEOM paths: Kabsch MSE and radius of gyration](conditional/geom-conditional-error-and-radius.png)
+![Generated GEOM paths: mean and central 90%](generated/geom-error-and-radius-quantiles.png)
+
+![Conditional GEOM paths: mean and central 90%](conditional/geom-conditional-error-and-radius-quantiles.png)
 
 ## Replot
 
 From the repository root:
 
 ```bash
-python figures/plot.py --data figures/reference/generated.npz --output-dir artifacts/figures/generated
-python figures/plot.py --data figures/reference/conditional.npz --output-dir artifacts/figures/conditional
+python figures/plot.py --data figures/reference/generated.npz --output-dir artifacts/figures/generated --spread quantiles
+python figures/plot.py --data figures/reference/conditional.npz --output-dir artifacts/figures/conditional --spread quantiles
 ```
 
-Each command writes a vector PDF and SVG, a 600 dpi PNG, a CSV of the mean curves,
-and a small JSON description. Blue denotes **Fragment Noise** and red denotes
+Each command writes a vector PDF and SVG, a 600 dpi PNG, CSVs of the mean and
+quantile curves, and a small JSON description. Use `--spread individual` for the
+individual-path versions. Blue denotes **Fragment Noise** and red denotes
 **Brownian Atoms**. Dashed lines describe the whole molecule; solid lines describe
-individual fragments. Mean lines have opacity 0.7, over faint individual paths.
+individual fragments. Mean lines have opacity 0.7; quantile lines are thinner
+with opacity 0.4. In the individual-path version, faint paths underlie the means.
 Both figures use the switching example's blue/red palette, 9 pt DejaVu Sans
 type, and thin black axes, in a 10.2 × 3.15 inch layout. The visible y ranges
 are 0–35 Å² for MSE and 0–7 Å for radius of gyration. Values outside these
