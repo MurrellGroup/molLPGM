@@ -27,6 +27,10 @@ Each command writes a vector PDF and SVG, a 600 dpi PNG, a CSV of the mean curve
 and a small JSON description. Blue denotes **Fragment Noise** and red denotes
 **Brownian Atoms**. Dashed lines describe the whole molecule; solid lines describe
 individual fragments. Mean lines have opacity 0.7, over faint individual paths.
+Both figures use the switching example's blue/red palette, 9 pt DejaVu Sans
+type, and thin black axes, in a 10.2 × 3.15 inch layout. The visible y ranges
+are 0–35 Å² for MSE and 0–7 Å for radius of gyration. Values outside these
+ranges still contribute to every mean; only the display is cropped.
 
 ## Measurements
 

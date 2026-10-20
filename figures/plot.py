@@ -24,9 +24,11 @@ import numpy as np
 
 MODELS = ("fragment", "bm")
 SCALES = ("total", "fragment")
-COLORS = {"fragment": "#2464A5", "bm": "#D62728"}
+COLORS = {"fragment": "#2468b4", "bm": "#ce3f46"}
 MODEL_LABELS = {"fragment": "Fragment Noise", "bm": "Brownian Atoms"}
 STYLES = {"total": (0, (4.8, 2.7)), "fragment": "-"}
+FIGURE_SIZE = (10.2, 3.15)
+Y_LIMITS = {"mse": (0, 35), "rg": (0, 7)}
 STEM = "geom-error-and-radius"
 
 
@@ -71,15 +73,17 @@ def plot(data_path, output):
         {
             "font.family": "DejaVu Sans",
             "font.size": 9,
-            "axes.labelsize": 10,
-            "axes.labelcolor": "#242424",
-            "text.color": "#242424",
-            "xtick.color": "#383838",
-            "ytick.color": "#383838",
+            "axes.labelsize": 9,
+            "xtick.labelsize": 9,
+            "ytick.labelsize": 9,
+            "axes.labelcolor": "black",
+            "text.color": "black",
+            "xtick.color": "black",
+            "ytick.color": "black",
             "axes.spines.top": False,
             "axes.spines.right": False,
-            "axes.linewidth": 0.7,
-            "axes.edgecolor": "#383838",
+            "axes.linewidth": 0.65,
+            "axes.edgecolor": "black",
             "axes.facecolor": "white",
             "figure.facecolor": "white",
             "savefig.facecolor": "white",
@@ -90,8 +94,8 @@ def plot(data_path, output):
             "path.simplify": False,
         }
     )
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.65))
-    fig.subplots_adjust(left=0.083, right=0.985, bottom=0.165, top=0.83, wspace=0.29)
+    fig, axes = plt.subplots(1, 2, figsize=FIGURE_SIZE)
+    fig.subplots_adjust(left=0.065, right=0.985, bottom=0.17, top=0.83, wspace=0.19)
     limits = {}
     for ax, metric, ylabel in zip(
         axes, ("mse", "rg"), ("Kabsch-aligned MSE (Å²)", "Radius of gyration (Å)")
@@ -120,59 +124,53 @@ def plot(data_path, output):
                     means[f"{model}_{metric}_{scale}"],
                     color=COLORS[model],
                     linestyle=STYLES[scale],
-                    lw=1.8,
+                    lw=1.5,
                     alpha=0.7,
                     solid_capstyle="round",
                     dash_capstyle="butt",
                     zorder=3,
                 )
-        largest = max(
-            curves[f"{model}_{metric}_{scale}"].max()
-            for model in MODELS
-            for scale in SCALES
-        )
-        unit = 5 if metric == "mse" else 1
-        ymax = float(unit * np.ceil(largest / unit))
-        limits[metric] = [0, ymax]
+        # Crop the visible axes only; every path still contributes to the means.
+        limits[metric] = list(Y_LIMITS[metric])
         ax.set(
             xlim=(0, 1),
-            ylim=(0, ymax),
+            ylim=Y_LIMITS[metric],
             xlabel="Bridge time $t$" if conditional else "Generation time $t$",
             ylabel=ylabel,
         )
         ax.set_xticks(
             [0, 0.2, 0.4, 0.6, 0.8, 1], ["0", "0.2", "0.4", "0.6", "0.8", "1"]
         )
-        ax.set_yticks(np.arange(0, ymax + 0.01, 10 if metric == "mse" else 2))
-        ax.tick_params(direction="out", length=3, width=0.7, pad=3.5)
+        ax.set_yticks(np.arange(0, Y_LIMITS[metric][1] + 0.01, 5 if metric == "mse" else 1))
+        ax.tick_params(direction="out", length=3.5, width=0.65, pad=3.5)
         assert len(ax.lines) == 4 and len(ax.collections) == 4
     handles = [
         Line2D(
             [],
             [],
             color=COLORS["fragment"],
-            lw=2,
+            lw=1.5,
             alpha=0.7,
             label=MODEL_LABELS["fragment"],
         ),
-        Line2D([], [], color=COLORS["bm"], lw=2, alpha=0.7, label=MODEL_LABELS["bm"]),
+        Line2D([], [], color=COLORS["bm"], lw=1.5, alpha=0.7, label=MODEL_LABELS["bm"]),
         Line2D(
             [],
             [],
-            color="#444444",
-            lw=1.6,
+            color="#202020",
+            lw=1.5,
             linestyle=STYLES["total"],
             label="Whole molecule",
         ),
-        Line2D([], [], color="#444444", lw=1.6, label="Within fragment"),
+        Line2D([], [], color="#202020", lw=1.5, label="Within fragment"),
     ]
     fig.legend(
         handles=handles,
         loc="upper center",
-        bbox_to_anchor=(0.535, 0.982),
+        bbox_to_anchor=(0.525, 0.982),
         frameon=False,
         ncol=4,
-        fontsize=8.3,
+        fontsize=9,
         handlelength=2.5,
         columnspacing=1.5,
         handletextpad=0.65,
@@ -213,8 +211,12 @@ def plot(data_path, output):
         smoothing=False,
         path_subsampling=False,
         downsampling=False,
-        range_clipping=False,
-        figure_inches=[7.4, 3.65],
+        range_clipping=True,
+        clipping="Display limits only; no values are truncated or excluded from averaging.",
+        figure_inches=list(FIGURE_SIZE),
+        font_family="DejaVu Sans",
+        font_size_pt=9,
+        axes_width_pt=0.65,
         y_limits=limits,
         colors=COLORS,
         model_labels=MODEL_LABELS,
@@ -225,7 +227,7 @@ def plot(data_path, output):
         },
         individual_alpha=0.045,
         individual_width_pt=0.35,
-        mean_width_pt=1.8,
+        mean_width_pt=1.5,
         mean_alpha=0.7,
         mean_outline=False,
         source_sha256=hashlib.sha256(data_path.read_bytes()).hexdigest(),
