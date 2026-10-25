@@ -124,12 +124,12 @@ def _document_attention_reference(
 
 class RotationlessIPAAttention(nn.Module):
     """
-    AtomART-style rotationless IPA.
+    IPA with translation-only frames; see docs/models-and-training.md.
 
     Global learned query/key/value points are anchored at each input atom.
     Distances enter attention logits, while attended value points are returned
-    relative to the query atom. Translation cancels exactly; the learned xyz
-    projections deliberately do not enforce rotational equivariance.
+    relative to the query atom. Translation cancels in exact arithmetic; the
+    learned xyz projections do not enforce rotational equivariance.
     """
 
     def __init__(

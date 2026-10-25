@@ -8,7 +8,7 @@ We construct molecular generative processes by separating shared fragment motion
 
 A molecule has atom coordinates $`x=(x_i)_{i=1}^n`$, atom labels $`a=(a_i)_{i=1}^n`$, and a fixed fragment partition $`\mathcal F=\{I_f\}_{f=1}^m`$, with $`n_f=|I_f|`$. Its observed generative state is $`X_t=(x_t,a_t)`$. Both models condition on $`\mathcal F`$, including the atom count and the membership of every atom. The clean coordinates and atom labels are training endpoints, not network inputs.
 
-Coordinates lie in the molecule-centered subspace. Write
+Coordinates lie in the molecule-centered subspace. Centering uses the **arithmetic mean of all atom positions**, including hydrogens, rather than atomic masses. Write
 
 ```math
 (Pz)_i=z_i-\frac1n\sum_jz_j,
@@ -16,7 +16,9 @@ Coordinates lie in the molecule-centered subspace. Write
 \qquad \epsilon_i\sim\mathcal N(0,I_3).
 ```
 
-All labels initially equal a mask token. The source standard deviation is $`\sigma_0=3`$ Å before centering; centering gives per-coordinate variance $`\sigma_0^2(1-1/n)`$.
+All labels initially equal a mask token. The source standard deviation is $`\sigma_0=3`$ Å before centering; centering gives per-coordinate variance $`\sigma_0^2(1-1/n)`$. Coordinates of different atoms are therefore correlated: $`\mathrm{Cov}(x_{i,0},x_{j,0})=\sigma_0^2(\delta_{ij}-1/n)I_3`$.
+
+The clean endpoint is centered with the same projection. Both conditional processes remain in $`\sum_i x_i=0`$, and both learned samplers recenter after every coordinate update. This fixes the unmodelled global translation; it does not introduce a force drawing each fragment independently toward the origin. In Fragment Noise, fragment-centroid increments and noise are projected using atom-count weights, while internal coordinates and noise have zero mean within each fragment. Brownian Atoms projects its Cartesian noise at the molecule level. The network's translation symmetry and the precise sampling projections are described under [centering and coordinate updates](models-and-training.md#centering-and-coordinate-updates).
 
 ## LPGM formulation
 

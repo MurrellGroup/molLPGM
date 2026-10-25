@@ -2,12 +2,12 @@
 
 Molecular generation with fragment **[latent process generator matching (LPGM)](https://arxiv.org/abs/2605.20547)** and an **atom-wise Brownian flow-matching baseline (BM)**, for GEOM-Drugs and QM9.
 
-The fragment process separates shared fragment translation and rotation from internal atomic motion. BM uses a single Cartesian Brownian bridge. Both networks receive the same fragment membership information, including learned same/different-fragment attention biases in every layer, and use the same backbone and training schedule. Neither uses positional encoding.
+The fragment process separates shared fragment translation and rotation from internal atomic motion. BM uses a single Cartesian Brownian bridge. Both networks receive the same fragment membership information, including learned same/different-fragment attention biases in every layer, and use the same backbone and training schedule. Neither uses atom-order positional encoding.
 
 ## Documentation
 
 - [Mathematics](docs/mathematics.md): latent and observed processes, the pushforward generator, conditional targets, and the fragment and BM objectives.
-- [Models and training](docs/models-and-training.md): conditioning, architecture, process parameters, datasets, optimization, evaluation, and commands for training and sampling.
+- [Models and training](docs/models-and-training.md): an [architecture methods summary](docs/models-and-training.md#methods-summary) followed by [explicit equations and symmetry/centering details](docs/models-and-training.md#architecture-details), then process parameters, datasets, optimization, evaluation, and commands.
 - [Trajectory viewer](viewer/README.md): an independent combined viewer with playback, static frame sequences, and figure export.
 - [Publication figures](figures/README.md): standalone plotting and measurement code, with the paired generated and conditional GEOM path data.
 - [One-dimensional switching example](examples/switching/README.md): a separate LPGM example with training code, trained weights, and reproducible figures.

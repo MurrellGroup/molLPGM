@@ -149,7 +149,7 @@ class AdaLNIPABlock(nn.Module):
 
 
 class MolecularModel(nn.Module):
-    """Translation-equivariant, deliberately rotation-sensitive molecular IPA."""
+    """Rotation-sensitive IPA with translation-invariant displacement predictions."""
 
     def __init__(self, config: ModelConfig = ModelConfig()):
         super().__init__()
