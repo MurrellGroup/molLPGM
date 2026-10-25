@@ -39,7 +39,8 @@ individual fragments. Mean lines have opacity 0.7; quantile lines are thinner
 with opacity 0.4. In the individual-path version, faint paths underlie the means.
 Both figures use the switching example's blue/red palette, 9 pt DejaVu Sans
 type, and thin black axes, in a 10.2 × 3.15 inch layout. The visible y ranges
-are 0–35 Å² for MSE and 0–7 Å for radius of gyration. Values outside these
+are 0–40 Å² for conditional-path MSE, 0–35 Å² for generated-path MSE,
+and 0–7 Å for radius of gyration. Values outside these
 ranges still contribute to every mean; only the display is cropped.
 
 ## Measurements

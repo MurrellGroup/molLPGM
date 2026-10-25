@@ -37,6 +37,9 @@ def plot(data_path, output, spread="individual"):
         raise ValueError("spread must be individual or quantiles")
     data = np.load(data_path)
     conditional = "path_kind" in data and str(data["path_kind"]) == "conditional"
+    y_limits = dict(Y_LIMITS)
+    if conditional:
+        y_limits["mse"] = (0, 40)
     dataset = str(data["dataset"]) if "dataset" in data else "geom"
     stem = f"{dataset}-conditional-error-and-radius" if conditional else f"{dataset}-error-and-radius"
     if spread == "quantiles":
@@ -149,17 +152,17 @@ def plot(data_path, output, spread="individual"):
                     zorder=3,
                 )
         # Crop the visible axes only; every path still contributes to the means.
-        limits[metric] = list(Y_LIMITS[metric])
+        limits[metric] = list(y_limits[metric])
         ax.set(
             xlim=(0, 1),
-            ylim=Y_LIMITS[metric],
+            ylim=y_limits[metric],
             xlabel="Bridge time $t$" if conditional else "Generation time $t$",
             ylabel=ylabel,
         )
         ax.set_xticks(
             [0, 0.2, 0.4, 0.6, 0.8, 1], ["0", "0.2", "0.4", "0.6", "0.8", "1"]
         )
-        ax.set_yticks(np.arange(0, Y_LIMITS[metric][1] + 0.01, 5 if metric == "mse" else 1))
+        ax.set_yticks(np.arange(0, y_limits[metric][1] + 0.01, 5 if metric == "mse" else 1))
         ax.tick_params(direction="out", length=3.5, width=0.65, pad=3.5)
         if quantiles is not None:
             assert len(ax.lines) == 12 and len(ax.collections) == 0
